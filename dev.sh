@@ -6,20 +6,22 @@
 
 # Activate the env and get the requirements
 . env/bin/activate
-pip install -r odoo/requirements.txt
+pip install -r requirements.txt
 
 # Get Odoo version
-BRANCH=`grep ursa/odoo odoo/Dockerfile | cut -d : -f 2 | cut -d - -f 1`
+BRANCH=`grep -v "^#" requirements.txt | grep "nightly\.odoo\.com" | cut -d / -f 4`
 
-ADDONS_PATH=$PWD/odoo/custom-addons
+# Clone repositories and build ADDONS_PATH
+ADDONS_PATH=$PWD/custom-addons
 cd src
-
-# Clone repositories
-for REPO in `cat ../repo.list`
+for REPO in `grep -v "^#" ../repo.list`
 do
-    git clone $REPO -b $BRANCH
-    ADDONS_PATH=$ADDONS_PATH,$PWD/`echo $REPO | cut -d "/" -f 2`
+    REPO_DIR=`echo $REPO | cut -d "/" -f 2 | sed -e 's/\.git//g'`
+    [ ! -d $REPO_DIR ] && git clone $REPO -b $BRANCH
+    ADDONS_PATH=$ADDONS_PATH,$PWD/`echo $REPO_DIR`
 done
+cd ..
+[ -d enterprise ] && ADDONS_PATH=$PWD/enterprise,$ADDONS_PATH
 
 # Create the Odoo configuration file for the dev environment
 cd ..

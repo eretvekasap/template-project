@@ -16,30 +16,24 @@ and start Odoo
 
 `$ ./env/bin/odoo -c dev.conf`
 
-# Build your production environment
+# Build the Odoo image
 
 ```
-$ cd odoo
 $ docker build -t odoo .
-$ cd ../nginx
-$ docker build -t nginx .
 ```
 
-# Push your production environment to the production server
-
-On the building system:
+# Push it to registry
 
 ```
-$ docker save odoo | gzip > odoo.tgz
-$ docker save nginx | gzip > nginx.tgz
-$ scp odoo.tgz nginx.tgz root@$SERVER:/tmp/.
+$ docker push
 ```
+
+# Push the Odoo image to the production server
 
 On the production system:
 
 ```
 $ zcat /tmp/odoo.tgz | docker load
-$ zcat /tmp/nginx.tgz | docker load
 ```
 
 # Start the production environment
