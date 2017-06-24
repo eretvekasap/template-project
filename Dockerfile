@@ -4,7 +4,8 @@ MAINTAINER "Ursa Information Systems"
 
 # Copy files
 COPY ./requirements.txt /tmp/
-COPY ./custom-addons ./enterprise /opt/odoo/
+COPY ./custom-addons /opt/odoo/
+# COPY ./enterprise /opt/odoo/
 
 RUN chown -R odoo /etc/odoo/odoo.conf /opt/odoo
 
